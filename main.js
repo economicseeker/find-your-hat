@@ -60,6 +60,29 @@ class Field {
     this.playerPos = { x, y };
     return false;
   }
+
+  static generateField(height, width, holePercent = 0.2) {
+    // Create empty field
+    const field = [];
+    for (let y = 0; y < height; y++) {
+      const row = [];
+      for (let x = 0; x < width; x++) {
+        // Place holes based on percentage
+        row.push(Math.random() < holePercent ? hole : fieldCharacter);
+      }
+      field.push(row);
+    }
+    // Place the hat at a random position not (0,0)
+    let hatX, hatY;
+    do {
+      hatX = Math.floor(Math.random() * width);
+      hatY = Math.floor(Math.random() * height);
+    } while (hatX === 0 && hatY === 0);
+    field[hatY][hatX] = hat;
+    // Place the player at (0,0)
+    field[0][0] = pathCharacter;
+    return field;
+  }
 }
 
 function playGame(fieldInstance) {
@@ -84,10 +107,6 @@ function playGame(fieldInstance) {
 }
 
 // Test instance for playing
-const myField = new Field([
-  ['*', '░', 'O'],
-  ['░', 'O', '░'],
-  ['░', '^', '░'],
-]);
-
+const randomField = Field.generateField(5, 8, 0.2);
+const myField = new Field(randomField);
 playGame(myField);
